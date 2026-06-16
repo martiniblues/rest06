@@ -1925,47 +1925,92 @@ button {
 }
 
 /* ---------- CHAT POPUP ---------- */
+
+/* Float-soft: ±10px, 4초 — wrapper 전체가 하나의 클러스터로 이동 */
+@keyframes animate-float-soft {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
 #chatWrapper {
   position: fixed;
   bottom: 24px;
   right: 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-end;   /* 툴팁·버튼 오른쪽 정렬 */
+  gap: 10px;
   z-index: 900;
+  animation: animate-float-soft 4s ease-in-out infinite;
 }
 
+/* 채팅이 열린 동안: float 멈춤 + 툴팁 숨김 */
+#chatWrapper.chat-open {
+  animation: none;
+}
+#chatWrapper.chat-open #chatTooltip {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+}
+
+/* 풍선 도움말 — 말풍선 카드 스타일 */
 .chat-tooltip {
-  background: linear-gradient(125deg, var(--c1), var(--c2));
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 6px 14px;
-  border-radius: 100px;
-  white-space: nowrap;
-  box-shadow: 0 4px 14px var(--glow);
-  letter-spacing: 0.02em;
-  animation: tooltipPulse 3s ease-in-out infinite;
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  padding: 12px 16px;
+  width: 230px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.14), 0 2px 8px var(--glow);
+  transition: opacity 0.25s, transform 0.25s;
 }
 
-@keyframes tooltipPulse {
-  0%, 100% { opacity: 1; transform: translateY(0); }
-  50%       { opacity: 0.85; transform: translateY(-3px); }
-}
-
-/* Arrow pointing down from tooltip to button */
+/* 화살표: 말풍선 아래쪽 오른편 → 버튼 가리킴 */
 .chat-tooltip::after {
   content: '';
   position: absolute;
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: var(--c2);
+  right: 30px;           /* 버튼 중심 정렬 */
+  border: 8px solid transparent;
+  border-top-color: var(--card);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.08));
 }
-.chat-tooltip { position: relative; }
 
+/* 테두리 화살표 레이어 (border 색) */
+.chat-tooltip::before {
+  content: '';
+  position: absolute;
+  top: calc(100% + 1px);
+  right: 29px;
+  border: 9px solid transparent;
+  border-top-color: var(--edge);
+  z-index: -1;
+}
+
+.ct-main {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 5px;
+}
+
+.ct-sub {
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.ct-cta {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c1);
+  letter-spacing: 0.01em;
+}
+
+/* 채팅 버튼 — 펄스만 유지, float은 wrapper가 처리 */
 #chatBtn {
   width: 84px;
   height: 84px;
@@ -1983,9 +2028,9 @@ button {
 }
 
 @keyframes chatBtnPulse {
-  0%   { box-shadow: 0 6px 28px var(--glow), 0 0 0 0 rgba(255,80,30,0.4); }
-  70%  { box-shadow: 0 6px 28px var(--glow), 0 0 0 18px rgba(255,80,30,0); }
-  100% { box-shadow: 0 6px 28px var(--glow), 0 0 0 0 rgba(255,80,30,0); }
+  0%   { box-shadow: 0 6px 28px var(--glow), 0 0 0 0   rgba(255,80,30,0.4); }
+  70%  { box-shadow: 0 6px 28px var(--glow), 0 0 0 18px rgba(255,80,30,0);   }
+  100% { box-shadow: 0 6px 28px var(--glow), 0 0 0 0   rgba(255,80,30,0);   }
 }
 
 #chatBtn:hover {

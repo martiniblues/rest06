@@ -395,18 +395,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (chatBtn && chatModal) {
+  function openChat() {
+    if (!chatModal) return;
+    chatModal.classList.add('open');
+    if (chatWrapper) chatWrapper.classList.add('chat-open');
+    if (chatInput) setTimeout(() => chatInput.focus(), 250);
+  }
+
+  function closeChat() {
+    if (!chatModal) return;
+    chatModal.classList.remove('open');
+    if (chatWrapper) chatWrapper.classList.remove('chat-open');
+  }
+
+  if (chatBtn) {
     chatBtn.addEventListener('click', () => {
-      chatModal.classList.toggle('open');
-      if (chatModal.classList.contains('open') && chatInput) {
-        setTimeout(() => chatInput.focus(), 250);
-      }
+      chatModal && chatModal.classList.contains('open') ? closeChat() : openChat();
     });
   }
 
-  if (chatClose && chatModal) {
-    chatClose.addEventListener('click', () => chatModal.classList.remove('open'));
-  }
+  if (chatClose) chatClose.addEventListener('click', closeChat);
 
   if (chatSend) chatSend.addEventListener('click', () => sendChatMessage());
 
@@ -425,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     if (chatModal && chatModal.classList.contains('open')) {
       if (!chatModal.contains(e.target) && chatWrapper && !chatWrapper.contains(e.target)) {
-        chatModal.classList.remove('open');
+        closeChat();
       }
     }
   });
